@@ -3,6 +3,7 @@
         this.menu.initTop();
         this.menu.initBottom();
         this.viewport.init();
+        this.wrapper.init();
         this.initEvents();
 
         if (window.mContext) {
@@ -100,10 +101,15 @@
     },
 
     wrapper: {
+        showTimeout: null,
+        init: function () {
+            this.preventInfHidden(2000);
+        },
         showWithDelay: function (delay) {
             var diff = window._startTicks ? (new Date().getTime() - window._startTicks) : -1;
             if (diff >= 0 && diff < delay) {
-                setTimeout(this.showSite, delay - diff);
+                if (this.showTimeout) clearTimeout(this.showTimeout);
+                this.showTimeout = setTimeout(this.showSite, delay - diff);
             } else {
                 this.showSite();
             }
@@ -115,6 +121,9 @@
         hideSite: function () {
             $('.all-wrapper').hide();
             $('#css-preloader').show();
+        },
+        preventInfHidden: function (delay) {
+            this.showWithDelay(delay);
         }
     },
 
